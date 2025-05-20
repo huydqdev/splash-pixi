@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { TextStyle } from 'pixi.js';
-import { Container, Graphics, Sprite, Text } from "pixi.js";
 
 /**
  * Interactive button component
@@ -62,7 +61,7 @@ const Button = ({
   });
   
   return (
-    <Container 
+    <pixiContainer 
       position={position}
       interactive={true}
       pointerdown={handlePointerDown}
@@ -73,7 +72,7 @@ const Button = ({
       cursor="pointer"
     >
       {/* Button background */}
-      <Graphics
+      <pixiGraphics
         draw={(g) => {
           g.clear();
           g.beginFill(currentColor);
@@ -89,13 +88,13 @@ const Button = ({
       />
       
       {/* Button text */}
-      <Text
+      <pixiText
         text={text}
         style={textStyle}
         anchor={0.5}
         position={[width / 2, height / 2]}
       />
-    </Container>
+    </pixiContainer>
   );
 };
 

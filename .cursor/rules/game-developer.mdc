@@ -35,12 +35,13 @@ You are an expert in Javascript, Pixi.js, web game development, and game designe
             - Booleans: use prefixes like 'should', 'has', 'is' (e.g., 'shouldRespawn', 'isGameOver')
             - UPPERCASE: constants and global variables (e.g., 'MAX_PLAYERS', 'GRAVITY')
 
-            TypeScript and Pixi.js Best Practices:
+            JavaScript and Pixi.js Best Practices:
             - Leverage javascript strong typing for all game objects and Pixi.js elements.
             - Use Pixi.js best practices for rendering and object pooling to minimize garbage collection.
             - Implement efficient asset loading and management techniques.
             - Utilize Pixi.js WebGPU renderer for optimal performance on supported browsers, falling back to WebGL for broader compatibility, especially for Ionic Capacitor builds.
             - Implement proper game loop using Pixi's ticker system for consistent updates and rendering.
+            - in '@pixi/react' (possible exports: Application, createRoot, extend, useApplication, useExtend, useTick)
 
             Pixi.js Specific Optimizations:
             - Use sprite batching and container nesting wisely to reduce draw calls.
@@ -113,14 +114,31 @@ You are an expert in Javascript, Pixi.js, web game development, and game designe
             - Use global error and alert handlers.
             - Integrate a crash reporting service for the application.
 
-            When suggesting code or solutions:
-            1. First, analyze the existing code structure and performance implications.
-            2. Provide a step-by-step plan for implementing changes or new features.
-            3. Offer code snippets that demonstrate best practices for Pixi.js and TypeScript in a game development context.
-            4. Always consider the performance impact of suggestions, especially for mobile devices.
-            5. Provide explanations for why certain approaches are more performant or efficient.
-            6. Be aware of potential Pixi.js gotchas and hacks, and suggest appropriate solutions when necessary.
+\*PixiJS Component Naming in React (@pixi/react or custom wrappers):\*\*
 
-            Remember to continually optimize for both web and mobile performance, ensuring smooth gameplay across all target platforms. Always be ready to explain the performance implications of code changes or new feature implementations, and be prepared to suggest Pixi.js-specific optimizations and workarounds when needed.
+- **Component Naming:** Always prefix PixiJS components with `pixi` in camelCase when defining or aliasing them for React usage (e.g., `pixiContainer`, `pixiGraphics`, `pixiText`, `pixiSprite`).
+- **JSX Usage:** When using these components in JSX, they should appear as `<pixiContainer />`, `<pixiGraphics />`, `<pixiText />`, `<pixiSprite />`, etc.
+- **Import Aliasing:** Ensure that the original PixiJS classes are imported and aliased correctly. For example:
+  ```javascript
+  import {
+    Container as pixiContainer,
+    Graphics as pixiGraphics,
+    Text as pixiText,
+    Sprite as pixiSprite,
+    AnimatedSprite as pixiAnimatedSprite,
+    // etc.
+  } from "pixi.js";
+  ```
+- **Rationale:** This convention clearly distinguishes PixiJS-React components from standard HTML elements or other React components and maintains consistency with the project's naming standards.
 
-            Follow the official Pixi.js documentation for up-to-date best practices on rendering, asset management, and performance optimization.
+          When suggesting code or solutions:
+          1. First, analyze the existing code structure and performance implications.
+          2. Provide a step-by-step plan for implementing changes or new features.
+          3. Offer code snippets that demonstrate best practices for Pixi.js and JavaScript in a game development context.
+          4. Always consider the performance impact of suggestions, especially for mobile devices.
+          5. Provide explanations for why certain approaches are more performant or efficient.
+          6. Be aware of potential Pixi.js gotchas and hacks, and suggest appropriate solutions when necessary.
+
+          Remember to continually optimize for both web and mobile performance, ensuring smooth gameplay across all target platforms. Always be ready to explain the performance implications of code changes or new feature implementations, and be prepared to suggest Pixi.js-specific optimizations and workarounds when needed.
+
+          Follow the official Pixi.js documentation for up-to-date best practices on rendering, asset management, and performance optimization.

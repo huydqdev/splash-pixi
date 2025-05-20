@@ -1,4 +1,3 @@
-import { Container, Graphics } from 'pixi.js';
 import { useEffect, useRef } from 'react';
 
 /**
@@ -54,9 +53,9 @@ const LoadingAnimation = ({ progress, width = 300, height = 20, position = [0, 0
   }, [progress, width, height]);
 
   return (
-    <Container position={position}>
+    <pixiContainer position={position}>
       {/* Background of loading bar */}
-      <Graphics
+      <pixiGraphics
         ref={backgroundRef}
         draw={(g) => {
           g.clear();
@@ -67,7 +66,7 @@ const LoadingAnimation = ({ progress, width = 300, height = 20, position = [0, 0
       />
       
       {/* Progress part of loading bar */}
-      <Graphics
+      <pixiGraphics
         ref={progressRef}
         draw={(g) => {
           g.clear();
@@ -78,8 +77,8 @@ const LoadingAnimation = ({ progress, width = 300, height = 20, position = [0, 0
       />
       
       {/* Text showing percentage */}
-      <Container position={[width / 2, -height]}>
-        <Graphics
+      <pixiContainer position={[width / 2, -height]}>
+        <pixiGraphics
           draw={(g) => {
             g.clear();
             // Draw text - can be replaced with BitmapText for better performance
@@ -89,8 +88,8 @@ const LoadingAnimation = ({ progress, width = 300, height = 20, position = [0, 0
             g.endFill();
           }}
         />
-      </Container>
-    </Container>
+      </pixiContainer>
+    </pixiContainer>
   );
 };
 

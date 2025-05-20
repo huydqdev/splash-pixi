@@ -1,4 +1,3 @@
-import { Container, Graphics, Text } from 'pixi.js';
 import { useCallback, useState } from 'react';
 import { TextStyle } from 'pixi.js';
 
@@ -66,7 +65,7 @@ const GameCard = ({
   });
   
   return (
-    <Container 
+    <pixiContainer 
       position={[position[0], position[1] + yOffset]}
       scale={scale}
       interactive={true}
@@ -78,7 +77,7 @@ const GameCard = ({
       cursor="pointer"
     >
       {/* Card background */}
-      <Graphics
+      <pixiGraphics
         draw={(g) => {
           g.clear();
           
@@ -111,7 +110,7 @@ const GameCard = ({
       />
       
       {/* Game title */}
-      <Text
+      <pixiText
         text={game.name}
         style={titleStyle}
         anchor={[0.5, 0]}
@@ -119,7 +118,7 @@ const GameCard = ({
       />
       
       {/* Game description */}
-      <Text
+      <pixiText
         text={game.description}
         style={descriptionStyle}
         anchor={[0.5, 0]}
@@ -127,7 +126,7 @@ const GameCard = ({
       />
       
       {/* Play button indicator */}
-      <Graphics
+      <pixiGraphics
         draw={(g) => {
           g.clear();
           g.beginFill(0x3498db);
@@ -143,7 +142,7 @@ const GameCard = ({
           g.endFill();
         }}
       />
-    </Container>
+    </pixiContainer>
   );
 };
 

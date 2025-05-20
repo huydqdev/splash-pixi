@@ -1,4 +1,4 @@
-import { Container, Graphics, Sprite, Text } from 'pixi.js';
+import { Container as pixiContainer, Graphics as pixiGraphics, Sprite, Text as pixiText } from 'pixi.js';
 import { useCallback, useEffect } from 'react';
 import { TextStyle } from 'pixi.js';
 import LoadingAnimation from '../components/LoadingAnimation';
@@ -113,9 +113,9 @@ const GamePreloader = ({ dimensions }) => {
   const randomTip = loadingTips[Math.floor(Math.random() * loadingTips.length)];
   
   return (
-    <Container>
+    <pixiContainer>
       {/* Background */}
-      <Graphics
+      <pixiGraphics
         draw={(g) => {
           g.clear();
           g.beginFill(0x0f172a);
@@ -141,15 +141,15 @@ const GamePreloader = ({ dimensions }) => {
       />
       
       {/* Game title area */}
-      <Container position={[dimensions.width / 2, dimensions.height / 3]}>
-        <Text
+      <pixiContainer position={[dimensions.width / 2, dimensions.height / 3]}>
+        <pixiText
           text="Loading Game"
           style={titleStyle}
           anchor={0.5}
           position={[0, -70]}
         />
         
-        <Text
+        <pixiText
           text={selectedGame.name}
           style={gameNameStyle}
           anchor={0.5}
@@ -157,7 +157,7 @@ const GamePreloader = ({ dimensions }) => {
         />
         
         {/* Game icon placeholder */}
-        <Graphics
+        <pixiGraphics
           draw={(g) => {
             g.clear();
             g.beginFill(0x34495e, 0.7);
@@ -170,10 +170,10 @@ const GamePreloader = ({ dimensions }) => {
             g.endFill();
           }}
         />
-      </Container>
+      </pixiContainer>
       
       {/* Loading progress */}
-      <Container position={[dimensions.width / 2, dimensions.height / 2 + 50]}>
+      <pixiContainer position={[dimensions.width / 2, dimensions.height / 2 + 50]}>
         <LoadingAnimation
           progress={progress}
           width={400}
@@ -181,7 +181,7 @@ const GamePreloader = ({ dimensions }) => {
           position={[-200, 0]}
         />
         
-        <Text
+        <pixiText
           text={`Loading assets: ${Math.round(progress)}%`}
           style={new TextStyle({ fontFamily: 'Arial', fontSize: 16, fill: 0xffffff })}
           anchor={0.5}
@@ -189,8 +189,8 @@ const GamePreloader = ({ dimensions }) => {
         />
         
         {/* Loading tip */}
-        <Container position={[0, 80]}>
-          <Text
+        <pixiContainer position={[0, 80]}>
+          <pixiText
             text="TIP:"
             style={new TextStyle({
               fontFamily: 'Arial', 
@@ -202,14 +202,14 @@ const GamePreloader = ({ dimensions }) => {
             position={[-10, 10]}
           />
           
-          <Text
+          <pixiText
             text={randomTip}
             style={tipStyle}
             anchor={[0, 0.5]}
             position={[0, 10]}
           />
-        </Container>
-      </Container>
+        </pixiContainer>
+      </pixiContainer>
       
       {/* Cancel button */}
       <Button
@@ -220,7 +220,7 @@ const GamePreloader = ({ dimensions }) => {
         color={0xe74c3c}
         onClick={handleReturnToMenu}
       />
-    </Container>
+    </pixiContainer>
   );
 };
 

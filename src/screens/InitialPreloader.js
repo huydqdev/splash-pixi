@@ -1,5 +1,4 @@
-import { Container, Graphics, Text } from 'pixi.js';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { TextStyle } from 'pixi.js';
 import LoadingAnimation from '../components/LoadingAnimation';
 import useLoader from '../hooks/useLoader';
@@ -59,9 +58,9 @@ const InitialPreloader = ({ dimensions }) => {
   });
   
   return (
-    <Container>
+    <pixiContainer>
       {/* Background */}
-      <Graphics
+      <pixiGraphics
         draw={(g) => {
           g.clear();
           g.beginFill(0x1a1a2e);
@@ -83,7 +82,7 @@ const InitialPreloader = ({ dimensions }) => {
       />
       
       {/* Title */}
-      <Text
+      <pixiText
         text="Game Collection"
         style={textStyle}
         anchor={0.5}
@@ -91,7 +90,7 @@ const InitialPreloader = ({ dimensions }) => {
       />
       
       {/* Subtitle */}
-      <Text
+      <pixiText
         text="Loading menu assets..."
         style={subtitleStyle}
         anchor={0.5}
@@ -107,13 +106,13 @@ const InitialPreloader = ({ dimensions }) => {
       />
       
       {/* Version info */}
-      <Text
+      <pixiText
         text="v0.1.0"
         style={new TextStyle({ fontFamily: 'Arial', fontSize: 12, fill: 0x777777 })}
         anchor={[1, 1]}
         position={[dimensions.width - 20, dimensions.height - 20]}
       />
-    </Container>
+    </pixiContainer>
   );
 };
 

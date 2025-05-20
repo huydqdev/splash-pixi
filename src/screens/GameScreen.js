@@ -1,8 +1,25 @@
-import { Container, Graphics, Text } from 'pixi.js';
+import { Container as pixiContainer, Graphics as pixiGraphics, Text as pixiText } from 'pixi.js';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TextStyle } from 'pixi.js';
 import Button from '../components/Button';
 import { useGame } from '../context/GameContext';
+
+// Define constants to replace the missing imports
+const GRID_PADDING = 20; // Default padding value
+
+/**
+ * Placeholder component for PixiGrid
+ */
+const PixiGrid = ({ x, y }) => {
+  return (
+    <pixiContainer position={[x, y]}>
+      <pixiText
+        text="Grid component not available"
+        style={new TextStyle({ fontFamily: 'Arial', fontSize: 18, fill: 0xffff00 })}
+      />
+    </pixiContainer>
+  );
+};
 
 /**
  * Main game screen
@@ -10,70 +27,44 @@ import { useGame } from '../context/GameContext';
  * @param {Object} props.dimensions - Screen dimensions { width, height }
  */
 const GameScreen = ({ dimensions }) => {
-  const { selectedGame, returnToMenu } = useGame();
+  const {
+    selectedGame,
+    returnToMenu,
+    playerScore,
+    botScore,
+    currentPlayer,
+    isGameOver,
+    resetSkyBoxGame,
+    boardSettings,
+    PLAYERS,
+  } = useGame();
+
   const [isPaused, setIsPaused] = useState(false);
-  const [gameState, setGameState] = useState({
-    score: 0,
-    lives: 3,
-    level: 1,
-  });
-  const gameLoopRef = useRef(null);
-  
-  // Set up game loop
+
   useEffect(() => {
-    if (!selectedGame || isPaused) return;
-    
-    // Game loop
-    const gameLoop = () => {
-      // Update game state
-      setGameState(prevState => ({
-        ...prevState,
-        score: prevState.score + 1,
-      }));
-      
-      // Store reference for cleanup
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
-    };
-    
-    // Start game loop
-    gameLoopRef.current = requestAnimationFrame(gameLoop);
-    
-    // Set up keyboard handling
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        setIsPaused(prev => !prev);
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    
-    // Cleanup
-    return () => {
-      if (gameLoopRef.current) {
-        cancelAnimationFrame(gameLoopRef.current);
-      }
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [selectedGame, isPaused]);
-  
-  // Handle pause/resume
+    // Effect removed since initializeSkyBoxGame is removed
+  }, [selectedGame, boardSettings]);
+
   const handleTogglePause = useCallback(() => {
+    if (selectedGame && selectedGame.id === 'sky-boxes' && isGameOver) return;
     setIsPaused(prev => !prev);
-  }, []);
-  
-  // Return to menu
+  }, [selectedGame, isGameOver]);
+
   const handleReturnToMenu = useCallback(() => {
-    if (gameLoopRef.current) {
-      cancelAnimationFrame(gameLoopRef.current);
-    }
     returnToMenu();
   }, [returnToMenu]);
-  
-  // Error case: no game selected
+
+  const handleRestartGame = useCallback(() => {
+    if (selectedGame && selectedGame.id === 'sky-boxes') {
+      resetSkyBoxGame();
+      setIsPaused(false);
+    }
+  }, [selectedGame, resetSkyBoxGame]);
+
   if (!selectedGame) {
     return (
-      <Container>
-        <Text
+      <pixiContainer>
+        <pixiText
           text="No game selected!"
           style={new TextStyle({ fontFamily: 'Arial', fontSize: 24, fill: 0xff0000 })}
           anchor={0.5}
@@ -84,48 +75,40 @@ const GameScreen = ({ dimensions }) => {
           position={[dimensions.width / 2 - 100, dimensions.height / 2 + 50]}
           onClick={handleReturnToMenu}
         />
-      </Container>
+      </pixiContainer>
     );
   }
-  
-  // Text styles
-  const scoreStyle = new TextStyle({
+
+  const uiTextStyle = new TextStyle({
     fontFamily: 'Arial',
     fontSize: 20,
     fontWeight: 'bold',
     fill: 0xffffff,
   });
-  
-  const gameOverStyle = new TextStyle({
+
+  const gameOverTextStyle = new TextStyle({
     fontFamily: 'Arial',
     fontSize: 48,
     fontWeight: 'bold',
     fill: 0xff0000,
+    align: 'center',
     dropShadow: true,
     dropShadowColor: 0x000000,
     dropShadowBlur: 4,
     dropShadowDistance: 2,
   });
   
+  const currentPlayerTextStyle = new TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 22,
+    fontWeight: 'bold',
+    fill: currentPlayer === PLAYERS.PLAYER_1 ? 0x00FF00 : 0xFF0000,
+  });
+
   return (
-    <Container>
-      {/* Game background */}
-      <Graphics
-        draw={(g) => {
-          g.clear();
-          g.beginFill(0x222222);
-          g.drawRect(0, 0, dimensions.width, dimensions.height);
-          g.endFill();
-          
-          // Game area border
-          g.lineStyle(2, 0x3498db);
-          g.drawRect(20, 60, dimensions.width - 40, dimensions.height - 80);
-        }}
-      />
-      
-      {/* Game title bar */}
-      <Container position={[0, 0]}>
-        <Graphics
+    <pixiContainer>
+      <pixiContainer position={[0, 0]}>
+        <pixiGraphics
           draw={(g) => {
             g.clear();
             g.beginFill(0x2c3e50);
@@ -133,135 +116,129 @@ const GameScreen = ({ dimensions }) => {
             g.endFill();
           }}
         />
-        
-        <Text
+        <pixiText
           text={selectedGame.name}
-          style={new TextStyle({
-            fontFamily: 'Arial',
-            fontSize: 24,
-            fontWeight: 'bold',
-            fill: 0xffffff,
-          })}
+          style={new TextStyle({ fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', fill: 0xffffff })}
           position={[20, 15]}
         />
-        
-        {/* Game UI elements */}
-        <Container position={[dimensions.width - 300, 15]}>
-          <Text
-            text={`Score: ${gameState.score}`}
-            style={scoreStyle}
-            position={[0, 0]}
-          />
-          
-          <Text
-            text={`Lives: ${gameState.lives}`}
-            style={scoreStyle}
-            position={[120, 0]}
-          />
-          
-          <Text
-            text={`Level: ${gameState.level}`}
-            style={scoreStyle}
-            position={[220, 0]}
-          />
-        </Container>
-      </Container>
-      
-      {/* Game area - where the actual game would be rendered */}
-      <Container position={[20, 60]}>
-        <Graphics
-          draw={(g) => {
-            g.clear();
-            
-            // Example game elements (would be replaced with actual game)
-            const time = Date.now() / 1000;
-            
-            // Player
-            g.beginFill(0x3498db);
-            g.drawCircle(
-              100 + Math.sin(time) * 50,
-              100 + Math.cos(time) * 50,
-              20
-            );
-            g.endFill();
-            
-            // Enemies
-            for (let i = 0; i < 5; i++) {
-              g.beginFill(0xe74c3c);
-              g.drawCircle(
-                300 + Math.sin(time + i) * 100,
-                200 + Math.cos(time + i) * 100,
-                10
-              );
-              g.endFill();
-            }
-          }}
-        />
-      </Container>
-      
-      {/* Pause menu overlay */}
-      {isPaused && (
-        <Container>
-          <Graphics
-            draw={(g) => {
-              g.clear();
-              g.beginFill(0x000000, 0.7);
-              g.drawRect(0, 0, dimensions.width, dimensions.height);
-              g.endFill();
-            }}
-          />
-          
-          <Text
-            text="PAUSED"
-            style={gameOverStyle}
-            anchor={0.5}
-            position={[dimensions.width / 2, dimensions.height / 3]}
-          />
-          
-          <Container position={[dimensions.width / 2 - 100, dimensions.height / 2]}>
-            <Button
-              text="Resume"
-              position={[0, 0]}
-              color={0x2ecc71}
-              onClick={handleTogglePause}
-            />
-            
-            <Button
-              text="Restart"
-              position={[0, 60]}
-              color={0xf1c40f}
-              onClick={() => {
-                setGameState({
-                  score: 0,
-                  lives: 3,
-                  level: 1,
-                });
-                setIsPaused(false);
-              }}
-            />
-            
-            <Button
-              text="Return to Menu"
-              position={[0, 120]}
-              color={0xe74c3c}
-              onClick={handleReturnToMenu}
-            />
-          </Container>
-        </Container>
-      )}
-      
-      {/* Pause button */}
-      {!isPaused && (
         <Button
-          text="Pause"
-          width={80}
+          text={isPaused ? "Resume" : "Pause"}
+          position={[dimensions.width - 120, 10]}
+          width={100}
           height={30}
-          position={[dimensions.width - 100, dimensions.height - 40]}
-          color={0x7f8c8d}
           onClick={handleTogglePause}
+          color={isPaused ? 0x2ecc71 : 0xf1c40f }
         />
+      </pixiContainer>
+
+      {selectedGame.id === 'sky-boxes' && (
+        <pixiContainer x={0} y={60}>
+          <pixiText
+            text={`Player 1: ${playerScore}`}
+            style={uiTextStyle}
+            position={[GRID_PADDING, 10]}
+          />
+          <pixiText
+            text={`Bot: ${botScore}`}
+            style={uiTextStyle}
+            position={[GRID_PADDING, 40]}
+          />
+          {!isGameOver && (
+            <pixiText
+              text={`${currentPlayer === PLAYERS.PLAYER_1 ? "Your Turn" : "Bot's Turn"}`}
+              style={currentPlayerTextStyle}
+              position={[dimensions.width / 2, 25]}
+              anchor={0.5}
+            />
+          )}
+
+          { !isPaused && <PixiGrid x={0} y={80} /> } 
+
+          {isGameOver && (
+            <pixiContainer x={0} y={0}>
+              <pixiGraphics
+                draw={g => {
+                  g.clear();
+                  g.beginFill(0x000000, 0.6);
+                  g.drawRect(0, 0, dimensions.width, dimensions.height - 60);
+                  g.endFill();
+                }}
+                />
+              <pixiText
+                text={`GAME OVER\n${playerScore > botScore ? "Player 1 Wins!" : botScore > playerScore ? "Bot Wins!" : "It's a Tie!"}`}
+                style={gameOverTextStyle}
+                anchor={0.5}
+                position={[dimensions.width / 2, (dimensions.height - 60) / 2 - 50]}
+              />
+              <Button
+                text="Play Again"
+                position={[dimensions.width / 2 - 75, (dimensions.height - 60) / 2 + 50]}
+                onClick={handleRestartGame}
+                width={150}
+                height={40}
+              />
+               <Button
+                text="Main Menu"
+                position={[dimensions.width / 2 - 75, (dimensions.height - 60) / 2 + 110]}
+                onClick={handleReturnToMenu}
+                width={150}
+                height={40}
+                color={0xe74c3c}
+              />
+            </pixiContainer>
+          )}
+          
+          {isPaused && !isGameOver && (
+            <pixiContainer x={0} y={0}>
+              <pixiGraphics
+                draw={(g) => {
+                  g.clear();
+                  g.beginFill(0x000000, 0.7);
+                  g.drawRect(0, 0, dimensions.width, dimensions.height - 60);
+                  g.endFill();
+                }}
+              />
+              <pixiText
+                text="PAUSED"
+                style={{...gameOverTextStyle, fill: 0xFFFFFF, fontSize: 38}}
+                anchor={0.5}
+                position={[dimensions.width / 2, (dimensions.height - 60) / 3]}
+              />
+              <Button
+                  text="Resume"
+                  position={[dimensions.width / 2 - 75, (dimensions.height - 60) / 2 - 20]}
+                  onClick={handleTogglePause}
+                  width={150}
+                  height={40}
+                  color={0x2ecc71}
+                />
+                <Button
+                  text="Restart"
+                  position={[dimensions.width / 2 - 75, (dimensions.height - 60) / 2 + 40]}
+                  onClick={handleRestartGame}
+                  width={150}
+                  height={40}
+                  color={0xf1c40f}
+                />
+                <Button
+                  text="Main Menu"
+                  position={[dimensions.width / 2 - 75, (dimensions.height - 60) / 2 + 100]}
+                  onClick={handleReturnToMenu}
+                  width={150}
+                  height={40}
+                  color={0xe74c3c}
+                /> 
+            </pixiContainer>
+          )}
+        </pixiContainer>
       )}
-    </Container>
+
+      {selectedGame.id !== 'sky-boxes' && (
+        <pixiContainer position={[20, 60]}>
+            <pixiText text={`Selected game: ${selectedGame.name} - (Implement actual game here)`} style={uiTextStyle} position={[10,10]} />
+        </pixiContainer>
+      )}
+    </pixiContainer>
   );
 };
 

@@ -5,6 +5,9 @@
  * Each game should have its own implementation in a separate folder.
  */
 
+// Import game logic functions
+import { checkBoxCompletion, isGameFinished, getBotMove } from './sky-boxes/gameLogic';
+
 // Example game definitions
 export const GAME_DEFINITIONS = [
   {
@@ -37,18 +40,18 @@ export const GAME_DEFINITIONS = [
     }
   },
   {
-    id: 'game3',
-    name: 'Racing Challenge',
-    description: 'Race against time and opponents in this high-speed racing experience.',
-    thumbnailUrl: '/assets/games/game3/thumbnail.png',
+    id: 'sky-boxes',
+    name: 'Sky Boxes',
+    description: 'Classic Dots and Boxes game. Connect dots to create boxes and score points. Be strategic to outplay the bot!',
+    thumbnailUrl: '/assets/games/sky-boxes/thumbnail.png',
     assets: {
-      // 'sprites': '/assets/games/game3/sprites.png',
-      // 'tracks': '/assets/games/game3/tracks.json',
+      // No specific assets needed for this game
     },
-    initialize: (container, dimensions) => {
-      console.log('Initializing Racing Challenge game');
-    }
-  },
+    // Game logic functions
+    checkBoxCompletion,
+    isGameFinished,
+    getBotMove
+  }
 ];
 
 /**
@@ -65,5 +68,21 @@ export const getGameById = (gameId) => {
  * @returns {Array} Array of game definitions
  */
 export const getAllGames = () => {
-  return [...GAME_DEFINITIONS];
+  return [
+    {
+      id: 'sky-boxes',
+      name: 'Sky Boxes',
+      description: 'Classic Dots and Boxes game. Connect dots to create boxes and score points. Be strategic to outplay the bot!',
+      // Expose game logic functions for the GameContext
+      checkBoxCompletion,
+      isGameFinished,
+      getBotMove
+    }
+  ];
+};
+
+// You might also export games individually if needed elsewhere,
+// but getAllGames is what GameContext is looking for.
+export {
+  // Export other game scenes here if you want direct access
 }; 

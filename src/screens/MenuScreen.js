@@ -1,4 +1,3 @@
-import { Container, Graphics, Text } from 'pixi.js';
 import { useCallback, useRef, useState } from 'react';
 import { TextStyle } from 'pixi.js';
 import Button from '../components/Button';
@@ -46,9 +45,9 @@ const MenuScreen = ({ dimensions }) => {
   const gridStartX = (dimensions.width - (cardsPerRow * (cardWidth + cardMargin) - cardMargin)) / 2;
   
   return (
-    <Container>
+    <pixiContainer>
       {/* Background */}
-      <Graphics
+      <pixiGraphics
         draw={(g) => {
           g.clear();
           // Gradient background
@@ -74,8 +73,8 @@ const MenuScreen = ({ dimensions }) => {
       />
       
       {/* Header */}
-      <Container position={[0, 20]}>
-        <Text
+      <pixiContainer position={[0, 20]}>
+        <pixiText
           text="Game Collection"
           style={titleStyle}
           anchor={[0.5, 0]}
@@ -83,7 +82,7 @@ const MenuScreen = ({ dimensions }) => {
         />
         
         {/* Navigation tabs */}
-        <Container position={[dimensions.width / 2 - 200, 100]}>
+        <pixiContainer position={[dimensions.width / 2 - 200, 100]}>
           <Button
             text="Games"
             width={120}
@@ -110,39 +109,54 @@ const MenuScreen = ({ dimensions }) => {
             color={selectedTab === 'help' ? 0x3498db : 0x2c3e50}
             onClick={() => handleTabChange('help')}
           />
-        </Container>
-      </Container>
+        </pixiContainer>
+      </pixiContainer>
       
       {/* Games tab content */}
       {selectedTab === 'games' && (
-        <Container position={[0, 180]}>
-          {/* Game cards */}
-          <Container position={[gridStartX, 0]}>
-            {games.map((game, index) => {
-              const row = Math.floor(index / cardsPerRow);
-              const col = index % cardsPerRow;
-              const x = col * (cardWidth + cardMargin);
-              const y = row * (cardHeight + cardMargin);
-              
-              return (
-                <GameCard
-                  key={game.id}
-                  game={game}
-                  position={[x, y]}
-                  width={cardWidth}
-                  height={cardHeight}
-                  onSelect={handleGameSelect}
-                />
-              );
-            })}
-          </Container>
-        </Container>
+        <pixiContainer position={[0, 180]}>
+          {games.length === 0 ? (
+            <pixiText
+              text="No games available."
+              style={new TextStyle({ fontFamily: 'Arial', fontSize: 20, fill: 0xcccccc, align: 'center' })}
+              anchor={0.5}
+              position={[dimensions.width / 2, 50]}
+            />
+          ) : cardsPerRow > 0 ? (
+            <pixiContainer position={[gridStartX, 0]}>
+              {games.map((game, index) => {
+                const row = Math.floor(index / cardsPerRow);
+                const col = index % cardsPerRow;
+                const x = col * (cardWidth + cardMargin);
+                const y = row * (cardHeight + cardMargin);
+
+                return (
+                  <GameCard
+                    key={game.id}
+                    game={game}
+                    position={[x, y]}
+                    width={cardWidth}
+                    height={cardHeight}
+                    onSelect={handleGameSelect}
+                  />
+                );
+              })}
+            </pixiContainer>
+          ) : (
+            <pixiText
+              text="Screen too small to display games. Try resizing the window."
+              style={new TextStyle({ fontFamily: 'Arial', fontSize: 18, fill: 0xcccccc, align: 'center', wordWrap: true, wordWrapWidth: dimensions.width - 40 })}
+              anchor={0.5}
+              position={[dimensions.width / 2, 50]}
+            />
+          )}
+        </pixiContainer>
       )}
       
       {/* Settings tab content */}
       {selectedTab === 'settings' && (
-        <Container position={[dimensions.width / 2 - 250, 200]}>
-          <Graphics
+        <pixiContainer position={[dimensions.width / 2 - 250, 200]}>
+          <pixiGraphics
             draw={(g) => {
               g.clear();
               g.beginFill(0x2c3e50, 0.8);
@@ -151,24 +165,24 @@ const MenuScreen = ({ dimensions }) => {
             }}
           />
           
-          <Text
+          <pixiText
             text="Settings"
             style={new TextStyle({ fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', fill: 0xffffff })}
             position={[20, 20]}
           />
           
-          <Text
+          <pixiText
             text="Settings options would go here"
             style={new TextStyle({ fontFamily: 'Arial', fontSize: 16, fill: 0xcccccc })}
             position={[20, 60]}
           />
-        </Container>
+        </pixiContainer>
       )}
       
       {/* Help tab content */}
       {selectedTab === 'help' && (
-        <Container position={[dimensions.width / 2 - 250, 200]}>
-          <Graphics
+        <pixiContainer position={[dimensions.width / 2 - 250, 200]}>
+          <pixiGraphics
             draw={(g) => {
               g.clear();
               g.beginFill(0x2c3e50, 0.8);
@@ -177,37 +191,37 @@ const MenuScreen = ({ dimensions }) => {
             }}
           />
           
-          <Text
+          <pixiText
             text="Help & Instructions"
             style={new TextStyle({ fontFamily: 'Arial', fontSize: 24, fontWeight: 'bold', fill: 0xffffff })}
             position={[20, 20]}
           />
           
-          <Text
+          <pixiText
             text="Help content would go here"
             style={new TextStyle({ fontFamily: 'Arial', fontSize: 16, fill: 0xcccccc })}
             position={[20, 60]}
           />
-        </Container>
+        </pixiContainer>
       )}
       
       {/* Footer */}
-      <Container position={[0, dimensions.height - 40]}>
-        <Text
+      <pixiContainer position={[0, dimensions.height - 40]}>
+        <pixiText
           text="© 2023 Game Collection"
           style={new TextStyle({ fontFamily: 'Arial', fontSize: 12, fill: 0x777777 })}
           anchor={[0, 0]}
           position={[20, 0]}
         />
         
-        <Text
+        <pixiText
           text="v0.1.0"
           style={new TextStyle({ fontFamily: 'Arial', fontSize: 12, fill: 0x777777 })}
           anchor={[1, 0]}
           position={[dimensions.width - 20, 0]}
         />
-      </Container>
-    </Container>
+      </pixiContainer>
+    </pixiContainer>
   );
 };
 

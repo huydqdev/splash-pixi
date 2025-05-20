@@ -7,6 +7,8 @@ import InitialPreloader from "./screens/InitialPreloader";
 import MenuScreen from "./screens/MenuScreen";
 import GamePreloader from "./screens/GamePreloader";
 import GameScreen from "./screens/GameScreen";
+import { BunnySprite } from "./games/bunny/BunnySprite";
+import { BunnyRunner } from "./games/bunny-runner/BunnyRunner";
 
 extend({
   Container,
@@ -58,7 +60,7 @@ const GameContent = () => {
       height={dimensions.height}
       options={{ autoDensity: true, resolution: window.devicePixelRatio || 1 }}
     >
-      {renderCurrentScreen()}
+      <BunnyRunner dimensions={dimensions} />
     </Application>
   );
 };
